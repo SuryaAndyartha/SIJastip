@@ -1,0 +1,37 @@
+
+# Build output
+bin/
+obj/
+
+# IDE dan editor
+.vs/
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# User-specific settings
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# NuGet packages
+*.nupkg
+*.snupkg
+
+# Test results
+TestResults/
+
+# Publish output
+publish/

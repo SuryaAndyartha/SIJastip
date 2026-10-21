@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JastipApp.Views.DashboardView">
+
+  <ScrollViewer>
+    <StackPanel Spacing="18">
+
+      <!-- Judul + periode -->
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="2">
+          <TextBlock Text="{Binding Sapaan}" Classes="h1" />
+          <TextBlock Text="{Binding Subjudul}" Classes="k" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <TextBlock Text="Periode" Classes="k" VerticalAlignment="Center" />
+          <ComboBox ItemsSource="{Binding PilihanPeriode}" SelectedItem="{Binding Periode}" MinWidth="170" />
+        </StackPanel>
+      </Grid>
+
+      <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="3" />
+
+      <!-- Kartu statistik -->
+      <ItemsControl ItemsSource="{Binding Kartu}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Columns="3" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Classes="card" Margin="0,0,14,14" ClipToBounds="True">
+              <Grid ColumnDefinitions="5,*">
+                <Border Background="{Binding Aksen}" />
+                <StackPanel Grid.Column="1" Margin="16,14" Spacing="4">
+                  <TextBlock Text="{Binding Judul}" Classes="k" />
+                  <TextBlock Text="{Binding Nilai}" FontSize="24" FontWeight="Bold"
+                             Foreground="{DynamicResource TextPrimary}" />
+                  <TextBlock Text="{Binding Keterangan}" Classes="k" FontSize="12" />
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <Grid ColumnDefinitions="*,14,340">
+
+        <StackPanel Spacing="14">
+          <!-- Grafik batang per hari -->
+          <Border Classes="card" Padding="20">
+            <StackPanel Spacing="14">
+              <TextBlock Text="{Binding JudulGrafik}" Classes="section" />
+              <Panel Height="190">
+                <ItemsControl ItemsSource="{Binding GrafikHarian}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <UniformGrid Rows="1" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Grid RowDefinitions="*,Auto,Auto" Margin="3,0">
+                        <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Spacing="3">
+                          <TextBlock Text="{Binding NilaiText}" Classes="k" FontSize="10"
+                                     HorizontalAlignment="Center" />
+                          <Border Height="{Binding Ukuran}" Background="{Binding Warna}"
+                                  CornerRadius="4,4,0,0" MaxWidth="42" ToolTip.Tip="{Binding NilaiText}" />
+                        </StackPanel>
+                        <Border Grid.Row="1" Height="1" Background="{DynamicResource Divider}" />
+                        <TextBlock Grid.Row="2" Text="{Binding Label}" Classes="k" FontSize="10"
+                                   HorizontalAlignment="Center" Margin="0,4,0,0" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="Belum ada transaksi pada periode ini." Classes="k"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           IsVisible="{Binding GrafikKosong}" />
+              </Panel>
+            </StackPanel>
+          </Border>
+
+          <!-- Grafik batang horizontal per status -->
+          <Border Classes="card" Padding="20">
+            <StackPanel Spacing="12">
+              <TextBlock Text="Pesanan per status" Classes="section" />
+              <ItemsControl ItemsSource="{Binding GrafikStatus}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="110,*,40" Margin="0,4">
+                      <TextBlock Text="{Binding Label}" Classes="k" VerticalAlignment="Center" />
+                      <Border Grid.Column="1" Height="14" CornerRadius="7" Background="{DynamicResource ProgressBg}"
+                              HorizontalAlignment="Stretch">
+                        <Border Width="{Binding Ukuran}" HorizontalAlignment="Left" CornerRadius="7"
+                                Background="{Binding Warna}" />
+                      </Border>
+                      <TextBlock Grid.Column="2" Text="{Binding NilaiText}" Classes="v" FontWeight="SemiBold"
+                                 HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+
+        <!-- Aktivitas terbaru -->
+        <Border Grid.Column="2" Classes="card" Padding="20" VerticalAlignment="Top">
+          <StackPanel Spacing="10">
+            <TextBlock Text="Aktivitas terbaru" Classes="section" />
+            <TextBlock Text="Belum ada aktivitas." Classes="k" IsVisible="{Binding AktivitasKosong}" />
+            <ItemsControl ItemsSource="{Binding Aktivitas}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="{DynamicResource Divider}" BorderThickness="0,0,0,1" Padding="0,8">
+                    <Grid ColumnDefinitions="Auto,10,*">
+                      <Border Background="{DynamicResource AccentSoft}" CornerRadius="6" Padding="6,2"
+                              VerticalAlignment="Top">
+                        <TextBlock Text="{Binding Jenis}" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentText}" />
+                      </Border>
+                      <StackPanel Grid.Column="2" Spacing="2">
+                        <TextBlock Text="{Binding Keterangan}" Classes="v" FontSize="13" />
+                        <TextBlock Text="{Binding Info}" Classes="k" FontSize="11" />
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,139 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JastipApp.Views.PengaturanView">
+
+  <ScrollViewer>
+    <StackPanel Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+      <StackPanel Spacing="2">
+        <TextBlock Text="Pengaturan" Classes="h1" />
+        <TextBlock Text="Tema tampilan, profil, password, dan cadangan database." Classes="k" />
+      </StackPanel>
+
+      <!-- Tampilan -->
+      <Border Classes="card" Padding="20">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Spacing="2">
+            <TextBlock Text="Mode gelap" Classes="section" />
+            <TextBlock Text="Disimpan di perangkat ini dan dipakai lagi saat aplikasi dibuka." Classes="k" />
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding TemaGelap}" OnContent="Aktif" OffContent="Mati"
+                        Foreground="{DynamicResource TextPrimary}" />
+        </Grid>
+      </Border>
+
+      <!-- Profil -->
+      <Border Classes="card" Padding="20">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="section">
+            <Run Text="Profil " />
+            <Run Text="{Binding Username}" FontWeight="Normal" FontSize="13" Foreground="{DynamicResource TextSecondary}" />
+          </TextBlock>
+          <Grid ColumnDefinitions="*,12,*">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Nama" Classes="k" />
+              <TextBox Text="{Binding Nama}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Kontak WhatsApp" Classes="k" />
+              <TextBox Text="{Binding Kontak}" />
+            </StackPanel>
+          </Grid>
+          <StackPanel Spacing="4">
+            <TextBlock Text="Alamat pengiriman" Classes="k" />
+            <TextBox Text="{Binding Alamat}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" />
+          </StackPanel>
+          <TextBlock Text="{Binding ProfilPesan}" Classes="error" IsVisible="{Binding ProfilError}" />
+          <TextBlock Text="{Binding ProfilPesan}" Foreground="{DynamicResource AccentText}"
+                     IsVisible="{Binding !ProfilError}" />
+          <Button Classes="primary" Content="Simpan profil" Command="{Binding SimpanProfilCommand}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Password -->
+      <Border Classes="card" Padding="20">
+        <StackPanel Spacing="12">
+          <TextBlock Text="Ganti password" Classes="section" />
+          <Grid ColumnDefinitions="*,12,*,12,*">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Password lama" Classes="k" />
+              <TextBox Text="{Binding PasswordLama}" PasswordChar="•" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Password baru (min. 6)" Classes="k" />
+              <TextBox Text="{Binding PasswordBaru}" PasswordChar="•" />
+            </StackPanel>
+            <StackPanel Grid.Column="4" Spacing="4">
+              <TextBlock Text="Ulangi password baru" Classes="k" />
+              <TextBox Text="{Binding PasswordKonfirmasi}" PasswordChar="•" />
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="{Binding PasswordPesan}" Classes="error" IsVisible="{Binding PasswordError}" />
+          <TextBlock Text="{Binding PasswordPesan}" Foreground="{DynamicResource AccentText}"
+                     IsVisible="{Binding !PasswordError}" />
+          <Button Classes="primary" Content="Ganti password" Command="{Binding GantiPasswordCommand}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Database -->
+      <Border Classes="card" Padding="20">
+        <StackPanel Spacing="10">
+          <TextBlock Text="Database" Classes="section" />
+          <TextBlock Classes="k" TextWrapping="Wrap">
+            <Run Text="Lokasi file: " />
+            <Run Text="{Binding LokasiDatabase}" Foreground="{DynamicResource TextPrimary}" />
+          </TextBlock>
+
+          <StackPanel Spacing="10" IsVisible="{Binding IsAdmin}">
+            <TextBlock Classes="k" TextWrapping="Wrap">
+              <Run Text="Cadangan disimpan di: " />
+              <Run Text="{Binding LokasiCadangan}" Foreground="{DynamicResource TextPrimary}" />
+            </TextBlock>
+            <Button Classes="primary" Content="Cadangkan sekarang" Command="{Binding CadangkanCommand}"
+                    IsEnabled="{Binding !SedangProses}" />
+
+            <TextBlock Text="Belum ada cadangan." Classes="k" IsVisible="{Binding CadanganKosong}" />
+            <ItemsControl ItemsSource="{Binding Cadangan}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="{DynamicResource Divider}" BorderThickness="0,0,0,1" Padding="0,8">
+                    <Grid ColumnDefinitions="*,Auto">
+                      <StackPanel>
+                        <TextBlock Text="{Binding Nama}" Classes="v" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding Info}" Classes="k" FontSize="12" />
+                      </StackPanel>
+                      <Button Grid.Column="1" Classes="ghost small" Content="Pulihkan" VerticalAlignment="Center"
+                              Command="{Binding $parent[UserControl].DataContext.MintaPulihkanCommand}"
+                              CommandParameter="{Binding}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Background="{DynamicResource DangerBg}" BorderBrush="{DynamicResource DangerBorder}"
+                    BorderThickness="1" CornerRadius="10" Padding="14"
+                    IsVisible="{Binding AkanDipulihkan, Converter={x:Static ObjectConverters.IsNotNull}}">
+              <StackPanel Spacing="8">
+                <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource DangerText}" TextWrapping="Wrap">
+                  <Run Text="Pulihkan database dari " />
+                  <Run Text="{Binding AkanDipulihkan.Nama}" />
+                  <Run Text="?" />
+                </TextBlock>
+                <TextBlock Classes="v" FontSize="13"
+                           Text="Semua data saat ini akan diganti isi cadangan. Database sekarang dicadangkan otomatis dulu, lalu kamu perlu login ulang." />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Classes="danger" Content="Ya, pulihkan" Command="{Binding PulihkanCommand}"
+                          IsEnabled="{Binding !SedangProses}" />
+                  <Button Classes="ghost" Content="Batal" Command="{Binding BatalPulihkanCommand}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+
+          <TextBlock Classes="k" TextWrapping="Wrap" IsVisible="{Binding !IsAdmin}"
+                     Text="Pencadangan dan pemulihan database hanya bisa dilakukan oleh admin." />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,183 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:JastipApp.ViewModels"
+             xmlns:v="using:JastipApp.Views"
+             x:Class="JastipApp.App"
+             RequestedThemeVariant="Light">
+
+  <!-- ===================================================================
+       Design tokens. Semua warna di View memakai {DynamicResource ...}
+       sehingga mode terang/gelap cukup diganti di sini.
+       =================================================================== -->
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="BgApp" Color="#EEF2F4" />
+          <SolidColorBrush x:Key="BgCard" Color="#FFFFFF" />
+          <SolidColorBrush x:Key="BgSubtle" Color="#F1F6F7" />
+          <SolidColorBrush x:Key="BgSubtle2" Color="#F7FAFA" />
+          <SolidColorBrush x:Key="BgSidebar" Color="#FFFFFF" />
+          <SolidColorBrush x:Key="BorderSoft" Color="#D5DEE2" />
+          <SolidColorBrush x:Key="BorderStrong" Color="#B8C6CC" />
+          <SolidColorBrush x:Key="Divider" Color="#E3EAED" />
+          <SolidColorBrush x:Key="TextPrimary" Color="#14272E" />
+          <SolidColorBrush x:Key="TextSecondary" Color="#52666E" />
+          <SolidColorBrush x:Key="Accent" Color="#0F6B6B" />
+          <SolidColorBrush x:Key="AccentHover" Color="#0B5656" />
+          <SolidColorBrush x:Key="AccentText" Color="#0F6B6B" />
+          <SolidColorBrush x:Key="AccentSoft" Color="#DCEFEC" />
+          <SolidColorBrush x:Key="Danger" Color="#9F1239" />
+          <SolidColorBrush x:Key="DangerHover" Color="#7F0F2E" />
+          <SolidColorBrush x:Key="DangerText" Color="#9F1239" />
+          <SolidColorBrush x:Key="DangerBg" Color="#FDF2F4" />
+          <SolidColorBrush x:Key="DangerBorder" Color="#F3C4CF" />
+          <SolidColorBrush x:Key="SuccessBg" Color="#E8F3EF" />
+          <SolidColorBrush x:Key="ProgressBg" Color="#DCE6E9" />
+          <SolidColorBrush x:Key="StepBg" Color="#E3ECEE" />
+          <SolidColorBrush x:Key="ListHover" Color="#B9D4D4" />
+          <SolidColorBrush x:Key="RowHover" Color="#F1F6F7" />
+          <SolidColorBrush x:Key="RowSelected" Color="#DCEFEC" />
+          <SolidColorBrush x:Key="ToastBg" Color="#14272E" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="BgApp" Color="#0E181C" />
+          <SolidColorBrush x:Key="BgCard" Color="#16242A" />
+          <SolidColorBrush x:Key="BgSubtle" Color="#1C2D34" />
+          <SolidColorBrush x:Key="BgSubtle2" Color="#1A2A30" />
+          <SolidColorBrush x:Key="BgSidebar" Color="#122026" />
+          <SolidColorBrush x:Key="BorderSoft" Color="#2A3D45" />
+          <SolidColorBrush x:Key="BorderStrong" Color="#3A5059" />
+          <SolidColorBrush x:Key="Divider" Color="#24363D" />
+          <SolidColorBrush x:Key="TextPrimary" Color="#E4EDEF" />
+          <SolidColorBrush x:Key="TextSecondary" Color="#97ADB5" />
+          <SolidColorBrush x:Key="Accent" Color="#14857F" />
+          <SolidColorBrush x:Key="AccentHover" Color="#18A097" />
+          <SolidColorBrush x:Key="AccentText" Color="#4FD1C5" />
+          <SolidColorBrush x:Key="AccentSoft" Color="#173B3A" />
+          <SolidColorBrush x:Key="Danger" Color="#BE123C" />
+          <SolidColorBrush x:Key="DangerHover" Color="#E11D48" />
+          <SolidColorBrush x:Key="DangerText" Color="#FB7185" />
+          <SolidColorBrush x:Key="DangerBg" Color="#3A1A22" />
+          <SolidColorBrush x:Key="DangerBorder" Color="#6B2737" />
+          <SolidColorBrush x:Key="SuccessBg" Color="#173B33" />
+          <SolidColorBrush x:Key="ProgressBg" Color="#2A3D45" />
+          <SolidColorBrush x:Key="StepBg" Color="#24363D" />
+          <SolidColorBrush x:Key="ListHover" Color="#24474A" />
+          <SolidColorBrush x:Key="RowHover" Color="#1C2D34" />
+          <SolidColorBrush x:Key="RowSelected" Color="#173B3A" />
+          <SolidColorBrush x:Key="ToastBg" Color="#2A3C43" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <!-- Halaman (ViewModel) → tampilan (UserControl) -->
+  <Application.DataTemplates>
+    <DataTemplate DataType="vm:DashboardViewModel"><v:DashboardView /></DataTemplate>
+    <DataTemplate DataType="vm:EventPageViewModel"><v:EventView /></DataTemplate>
+    <DataTemplate DataType="vm:PesananPageViewModel"><v:PesananView /></DataTemplate>
+    <DataTemplate DataType="vm:PelangganPageViewModel"><v:PelangganView /></DataTemplate>
+    <DataTemplate DataType="vm:PengaturanViewModel"><v:PengaturanView /></DataTemplate>
+  </Application.DataTemplates>
+
+  <!-- Style bersama untuk semua jendela & halaman -->
+  <Application.Styles>
+    <FluentTheme />
+
+    <Style Selector="TextBlock.k">
+      <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="TextBlock.v">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.section">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.h1">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="FontSize" Value="26" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="TextBlock.h2">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="TextBlock.th">
+      <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.badge">
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.error">
+      <Setter Property="Foreground" Value="{DynamicResource DangerText}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource BgCard}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderSoft}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{DynamicResource Accent}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Padding" Value="18,10" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource AccentHover}" />
+      <Setter Property="TextElement.Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.ghost">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="18,10" />
+      <Setter Property="CornerRadius" Value="8" />
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="{DynamicResource Danger}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Padding" Value="18,10" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource DangerHover}" />
+      <Setter Property="TextElement.Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.small">
+      <Setter Property="Padding" Value="10,4" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource AccentText}" />
+      <Setter Property="Padding" Value="4,2" />
+    </Style>
+    <Style Selector="Button.step">
+      <Setter Property="Width" Value="30" />
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="15" />
+      <Setter Property="Background" Value="{DynamicResource StepBg}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+  </Application.Styles>
+</Application>

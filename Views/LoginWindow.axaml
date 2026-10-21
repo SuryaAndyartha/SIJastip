@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JastipApp.Views.LoginWindow"
+        Title="SIJastip - Masuk"
+        Width="460" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BgApp}">
+
+  <StackPanel Margin="24" Spacing="16">
+    <StackPanel Spacing="2" HorizontalAlignment="Center">
+      <TextBlock Text="SIJastip" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"
+                 HorizontalAlignment="Center" />
+      <TextBlock Text="Info event jasa titip makanan dan barang" Foreground="{DynamicResource TextSecondary}"
+                 HorizontalAlignment="Center" />
+    </StackPanel>
+
+    <Border Classes="card" Padding="24">
+      <StackPanel Spacing="12">
+
+        <!-- ============ Masuk ============ -->
+        <StackPanel Spacing="12" IsVisible="{Binding IsModeMasuk}">
+          <TextBlock Text="Masuk" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" />
+          <StackPanel Spacing="4">
+            <TextBlock Text="Username" Classes="k" />
+            <TextBox Text="{Binding Username}" />
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Text="Password" Classes="k" />
+            <TextBox Text="{Binding Password}" PasswordChar="•" />
+          </StackPanel>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerText}" TextWrapping="Wrap"
+                     IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+          <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Masuk" Command="{Binding MasukCommand}" IsDefault="True" />
+          <Button Classes="link" HorizontalAlignment="Center" Content="Belum punya akun? Daftar" Command="{Binding GantiModeCommand}" />
+        </StackPanel>
+
+        <!-- ============ Daftar ============ -->
+        <StackPanel Spacing="12" IsVisible="{Binding IsModeDaftar}">
+          <TextBlock Text="Daftar akun" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" />
+          <StackPanel Spacing="4">
+            <TextBlock Text="Nama lengkap" Classes="k" />
+            <TextBox Text="{Binding DaftarNama}" />
+          </StackPanel>
+          <Grid ColumnDefinitions="*,12,*">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Username" Classes="k" />
+              <TextBox Text="{Binding DaftarUsername}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Daftar sebagai" Classes="k" />
+              <ComboBox ItemsSource="{Binding PeranDaftar}" SelectedItem="{Binding DaftarPeran}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+          </Grid>
+          <Grid ColumnDefinitions="*,12,*">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Password (min. 6)" Classes="k" />
+              <TextBox Text="{Binding DaftarPassword}" PasswordChar="•" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Ulangi password" Classes="k" />
+              <TextBox Text="{Binding DaftarKonfirmasi}" PasswordChar="•" />
+            </StackPanel>
+          </Grid>
+          <StackPanel Spacing="4">
+            <TextBlock Text="Kontak WhatsApp (wajib untuk penyedia)" Classes="k" />
+            <TextBox Text="{Binding DaftarKontak}" />
+          </StackPanel>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerText}" TextWrapping="Wrap"
+                     IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+          <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Daftar dan masuk" Command="{Binding DaftarCommand}" IsDefault="True" />
+          <Button Classes="link" HorizontalAlignment="Center" Content="Sudah punya akun? Masuk" Command="{Binding GantiModeCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <TextBlock Classes="k" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"
+               Text="Akun demo (password = username + 123): admin · rani, dita (penyedia) · budi, sari (pemesan)" />
+  </StackPanel>
+</Window>

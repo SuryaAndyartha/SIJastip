@@ -1,0 +1,98 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JastipApp.Views.MainWindow"
+        Title="SIJastip - Sistem Informasi Jastip"
+        Width="1340" Height="840" MinWidth="1240" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BgApp}">
+
+  <Window.Styles>
+    <!-- Menu sidebar -->
+    <Style Selector="ListBox.nav">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem">
+      <Setter Property="Padding" Value="12,9" />
+      <Setter Property="Margin" Value="0,0,0,4" />
+      <Setter Property="CornerRadius" Value="8" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource BgSubtle}" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource AccentSoft}" />
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected TextBlock.navjudul">
+      <Setter Property="Foreground" Value="{DynamicResource AccentText}" />
+    </Style>
+    <Style Selector="TextBlock.navjudul">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+  </Window.Styles>
+
+  <Grid ColumnDefinitions="220,*">
+
+    <!-- ================= Sidebar ================= -->
+    <Border Background="{DynamicResource BgSidebar}" BorderBrush="{DynamicResource BorderSoft}"
+            BorderThickness="0,0,1,0">
+      <Grid RowDefinitions="Auto,*,Auto" Margin="14,22,14,16">
+        <StackPanel Margin="6,0,0,0" Spacing="2">
+          <TextBlock Text="SIJastip" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+          <TextBlock Text="Sistem Informasi Jastip" Classes="k" FontSize="12" />
+        </StackPanel>
+
+        <ListBox Grid.Row="1" Classes="nav" Margin="0,24,0,0"
+                 ItemsSource="{Binding Menu}" SelectedItem="{Binding MenuTerpilih}">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Spacing="1">
+                <TextBlock Text="{Binding Judul}" Classes="navjudul" />
+                <TextBlock Text="{Binding Keterangan}" Classes="k" FontSize="11" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Row="2" Spacing="12">
+          <ToggleSwitch Content="Mode gelap" IsChecked="{Binding TemaGelap}"
+                        OnContent="Aktif" OffContent="Mati" Margin="6,0,0,0"
+                        Foreground="{DynamicResource TextPrimary}" />
+          <Border Height="1" Background="{DynamicResource Divider}" />
+          <Grid ColumnDefinitions="Auto,10,*" Margin="4,0,0,0">
+            <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource AccentSoft}">
+              <TextBlock Text="{Binding Inisial}" FontWeight="Bold" Foreground="{DynamicResource AccentText}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+              <TextBlock Text="{Binding UserText}" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"
+                         TextTrimming="CharacterEllipsis" />
+              <TextBlock Text="{Binding PeranText}" Classes="k" FontSize="12" />
+            </StackPanel>
+          </Grid>
+          <Button Classes="ghost" Content="Keluar" Command="{Binding KeluarCommand}"
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- ================= Halaman aktif ================= -->
+    <Grid Grid.Column="1">
+      <ContentControl Content="{Binding HalamanAktif}" Margin="24,22,24,22" />
+
+      <!-- Notifikasi singkat (hilang sendiri setelah beberapa detik, atau klik untuk menutup) -->
+      <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20"
+              Padding="0" Background="Transparent" BorderThickness="0"
+              Command="{Binding TutupNotifCommand}" IsVisible="{Binding ShowNotifikasi}">
+        <Border MaxWidth="440" CornerRadius="10" Padding="16,12"
+                Background="{DynamicResource ToastBg}" BoxShadow="0 4 16 0 #40000000">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Width="4" CornerRadius="2" Background="#3FB8A0" IsVisible="{Binding !NotifikasiError}" />
+            <Border Width="4" CornerRadius="2" Background="#F87171" IsVisible="{Binding NotifikasiError}" />
+            <TextBlock Text="{Binding Notifikasi}" Foreground="White" TextWrapping="Wrap" MaxWidth="390" />
+          </StackPanel>
+        </Border>
+      </Button>
+    </Grid>
+  </Grid>
+</Window>

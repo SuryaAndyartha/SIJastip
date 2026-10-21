@@ -1,0 +1,449 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JastipApp.Views.EventView">
+
+  <UserControl.Styles>
+    <!-- Kartu event di daftar: pilihan ditandai dengan bingkai teal -->
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,0,0,8" />
+      <Setter Property="CornerRadius" Value="12" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource ListHover}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource Accent}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource Accent}" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,*">
+
+    <!-- Judul halaman -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+      <StackPanel Spacing="2">
+        <TextBlock Text="Event jastip" Classes="h1" />
+        <TextBlock Text="Event titip beli makanan dan barang yang dibuka penyedia jasa" Classes="k" />
+      </StackPanel>
+      <Button Grid.Column="1" Classes="primary" Content="Buat event jastip" Command="{Binding BukaFormCommand}"
+              IsVisible="{Binding IsPenyedia}" VerticalAlignment="Center" />
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="420,20,*">
+
+      <!-- ================= Kolom kiri: daftar event ================= -->
+      <Grid Grid.Column="0" RowDefinitions="Auto,10,Auto,10,Auto,10,*">
+        <TextBox Grid.Row="0" Text="{Binding SearchText}"
+                 Watermark="Cari event, penyedia, lokasi, atau barang" />
+
+        <StackPanel Grid.Row="2" Spacing="4">
+          <Grid ColumnDefinitions="Auto,12,*">
+            <ComboBox ItemsSource="{Binding KategoriFilter}"
+                      SelectedItem="{Binding SelectedKategori}" MinWidth="120" />
+            <CheckBox Grid.Column="2" Content="Hanya yang masih dibuka"
+                      IsChecked="{Binding HanyaDibuka}" VerticalAlignment="Center" />
+          </Grid>
+          <CheckBox Content="Hanya event milik saya" IsChecked="{Binding HanyaMilikSaya}"
+                    IsVisible="{Binding IsPenyedia}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="4" Text="{Binding HasilText}" Classes="k" />
+
+        <Panel Grid.Row="6">
+          <ListBox ItemsSource="{Binding FilteredEvents}"
+                   SelectedItem="{Binding SelectedEvent}"
+                   Background="Transparent"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Border Background="{DynamicResource BgCard}" CornerRadius="10" Margin="2" ClipToBounds="True">
+                  <Grid ColumnDefinitions="6,*">
+                    <Border Background="{Binding StatusBrush}" />
+                    <StackPanel Grid.Column="1" Margin="14,12,14,12" Spacing="6">
+                      <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding Judul}" FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap" />
+                        <Border Grid.Column="1" Background="{Binding StatusBrush}" CornerRadius="10"
+                                Padding="8,2" Margin="8,2,0,0" VerticalAlignment="Top">
+                          <TextBlock Text="{Binding StatusText}" Foreground="White" FontSize="11"
+                                     FontWeight="SemiBold" />
+                        </Border>
+                      </Grid>
+                      <TextBlock Text="{Binding PenyediaLokasi}" Classes="k" TextWrapping="Wrap" />
+
+                      <Grid ColumnDefinitions="Auto,12,*" RowDefinitions="Auto,Auto,Auto" Margin="0,4,0,0">
+                        <TextBlock Grid.Row="0" Text="Tutup pesanan" Classes="k" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding DeadlineRingkas}"
+                                   Classes="v" FontSize="13" />
+                        <TextBlock Grid.Row="1" Text="Estimasi sampai" Classes="k" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding EstimasiText}"
+                                   Classes="v" FontSize="13" />
+                        <TextBlock Grid.Row="2" Text="Ongkos kirim" Classes="k" />
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding OngkirText}"
+                                   Classes="v" FontSize="13" />
+                      </Grid>
+
+                      <ProgressBar Value="{Binding KuotaPersen}" Maximum="100" Height="4"
+                                   Foreground="{DynamicResource Accent}" Background="{DynamicResource ProgressBg}" Margin="0,4,0,0" />
+                      <TextBlock Text="{Binding KuotaText}" Classes="k" FontSize="12" />
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <TextBlock Text="Tidak ada event yang cocok. Ubah kata kunci atau filter."
+                     IsVisible="{Binding IsFilterKosong}" Classes="k"
+                     HorizontalAlignment="Center" VerticalAlignment="Top"
+                     TextWrapping="Wrap" Margin="0,24,0,0" />
+        </Panel>
+      </Grid>
+
+      <!-- ================= Kolom kanan: detail / form ================= -->
+      <Border Grid.Column="2" Background="{DynamicResource BgCard}" CornerRadius="12"
+              BorderBrush="{DynamicResource BorderSoft}" BorderThickness="1">
+        <Grid>
+
+          <!-- Kondisi kosong -->
+          <StackPanel IsVisible="{Binding ShowEmpty}" VerticalAlignment="Center"
+                      HorizontalAlignment="Center" Spacing="6" MaxWidth="340">
+            <TextBlock Text="Belum ada event dipilih" FontSize="18" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" />
+            <TextBlock Text="Pilih event di sebelah kiri untuk melihat daftar barang, ongkir, dan batas waktu pemesanan."
+                       Classes="k" TextWrapping="Wrap" TextAlignment="Center" />
+          </StackPanel>
+
+          <!-- Detail event -->
+          <Panel IsVisible="{Binding ShowDetail}">
+            <ScrollViewer DataContext="{Binding SelectedEvent}">
+              <StackPanel Margin="28" Spacing="20">
+
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Judul}" FontSize="24" FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap" />
+                    <Border Grid.Column="1" Background="{Binding StatusBrush}" CornerRadius="12"
+                            Padding="10,3" Margin="12,6,0,0" VerticalAlignment="Top">
+                      <TextBlock Text="{Binding StatusText}" Foreground="White" FontSize="12"
+                                 FontWeight="SemiBold" />
+                    </Border>
+                  </Grid>
+                  <TextBlock Text="{Binding PenyediaLokasi}" Classes="k" />
+                  <TextBlock Text="{Binding Deskripsi}" Classes="v" Margin="0,6,0,0" MaxWidth="620"
+                             HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <!-- Informasi utama -->
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,10,Auto,10,Auto,10,Auto,10,Auto">
+                  <TextBlock Grid.Row="0" Text="Tutup pesanan" Classes="k" />
+                  <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="{Binding DeadlineText}" Classes="v" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding SisaText}" Foreground="{Binding StatusBrush}"
+                               FontSize="13" />
+                  </StackPanel>
+
+                  <TextBlock Grid.Row="2" Text="Estimasi sampai" Classes="k" />
+                  <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding EstimasiText}" Classes="v" />
+
+                  <TextBlock Grid.Row="4" Text="Ongkos kirim" Classes="k" />
+                  <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding OngkirText}" Classes="v" />
+
+                  <TextBlock Grid.Row="6" Text="Biaya jasa" Classes="k" />
+                  <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding JasaText}" Classes="v" />
+
+                  <TextBlock Grid.Row="8" Text="Kuota" Classes="k" />
+                  <StackPanel Grid.Row="8" Grid.Column="1" Spacing="4">
+                    <TextBlock Text="{Binding KuotaText}" Classes="v" />
+                    <ProgressBar Value="{Binding KuotaPersen}" Maximum="100" Height="4"
+                                 Foreground="{DynamicResource Accent}" Background="{DynamicResource ProgressBg}" MaxWidth="260"
+                                 HorizontalAlignment="Left" />
+                  </StackPanel>
+                </Grid>
+
+                <Border Height="1" Background="{DynamicResource Divider}" />
+
+                <!-- Daftar barang -->
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Barang yang bisa dititip" Classes="section" />
+                  <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border BorderBrush="{DynamicResource Divider}" BorderThickness="0,0,0,1" Padding="0,10">
+                          <Grid ColumnDefinitions="*,16,Auto,16,Auto">
+                            <StackPanel VerticalAlignment="Center">
+                              <TextBlock Text="{Binding Nama}" Classes="v" FontWeight="SemiBold" />
+                              <TextBlock Text="{Binding Catatan}" Classes="k" FontSize="12"
+                                         IsVisible="{Binding Catatan, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" Text="{Binding HargaText}" Classes="v"
+                                       VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding $parent[ItemsControl].DataContext.TampilkanPilihBarang}">
+                              <Button Classes="step" Content="-" Command="{Binding KurangCommand}" />
+                              <TextBlock Text="{Binding Qty}" Width="24" TextAlignment="Center"
+                                         VerticalAlignment="Center" FontWeight="SemiBold" />
+                              <Button Classes="step" Content="+" Command="{Binding TambahCommand}"
+                                      IsEnabled="{Binding CanOrder}" />
+                            </StackPanel>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+
+                <!-- Rincian biaya (pemesan yang belum memesan di event ini) -->
+                <Border Background="{DynamicResource BgSubtle}" CornerRadius="10" Padding="18"
+                        IsVisible="{Binding TampilkanPilihBarang}">
+                  <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBlock Text="Subtotal barang" Classes="k" />
+                      <TextBlock Grid.Column="1" Text="{Binding TotalBarangText}" Classes="v" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBlock Text="Biaya jasa" Classes="k" />
+                      <TextBlock Grid.Column="1" Text="{Binding JasaText}" Classes="v" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBlock Text="Ongkos kirim" Classes="k" />
+                      <TextBlock Grid.Column="1" Text="{Binding OngkirText}" Classes="v" />
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource BorderSoft}" Margin="0,4" />
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBlock Text="Total bayar" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" />
+                      <TextBlock Grid.Column="1" Text="{Binding TotalBayarText}" FontSize="18"
+                                 FontWeight="Bold" Foreground="{DynamicResource AccentText}" />
+                    </Grid>
+                  </StackPanel>
+                </Border>
+
+                <StackPanel Spacing="8" IsVisible="{Binding TampilkanPilihBarang}">
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Classes="primary" Content="{Binding TombolPesanText}"
+                            Click="OnKirimPesanan" IsEnabled="{Binding BisaPesan}" />
+                    <Button Classes="ghost" Content="Batal ubah" Command="{Binding BatalUbahCommand}"
+                            IsVisible="{Binding SedangUbah}" />
+                  </StackPanel>
+                  <TextBlock Text="{Binding PesanInfo}" Classes="error"
+                             IsVisible="{Binding PesanInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                  <TextBlock Classes="k" TextWrapping="Wrap" FontSize="12" IsVisible="{Binding !SedangUbah}"
+                             Text="Pesanan disimpan dan memakai 1 slot kuota. Ringkasannya tersalin untuk dikirim ke chat penyedia." />
+                </StackPanel>
+
+                <!-- Pesanan milik pemesan di event ini -->
+                <Border Background="{DynamicResource SuccessBg}" CornerRadius="10" Padding="18"
+                        IsVisible="{Binding TampilkanPesananSaya}">
+                  <StackPanel Spacing="6">
+                    <StackPanel Spacing="6" DataContext="{Binding PesananSaya}">
+                      <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Kamu sudah memesan di event ini" Classes="section" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                          <Border Background="{Binding StatusBrush}" CornerRadius="10" Padding="8,2">
+                            <TextBlock Text="{Binding StatusText}" Classes="badge" />
+                          </Border>
+                          <Border IsVisible="{Binding TampilBayar}" Background="{Binding BayarBrush}" CornerRadius="10" Padding="8,2">
+                            <TextBlock Text="{Binding BayarText}" Classes="badge" />
+                          </Border>
+                        </StackPanel>
+                      </Grid>
+                      <TextBlock Classes="k">
+                        <Run Text="{Binding Kode}" FontWeight="SemiBold" />
+                        <Run Text=" · " />
+                        <Run Text="{Binding WaktuText}" />
+                      </TextBlock>
+                      <TextBlock Text="{Binding RincianText}" Classes="v" />
+                      <TextBlock Text="{Binding TotalText}" FontWeight="Bold" Foreground="{DynamicResource AccentText}" />
+                      <TextBlock Classes="k">
+                        <Run Text="Dibayar " />
+                        <Run Text="{Binding DibayarText}" />
+                        <Run Text=" · sisa tagihan " />
+                        <Run Text="{Binding SisaRp}" FontWeight="SemiBold" />
+                      </TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,0">
+                      <Button Classes="ghost" Content="Salin ringkasan" Click="OnSalinRingkasan"
+                              DataContext="{Binding PesananSaya}" />
+                      <Button Classes="ghost" Content="Ubah pesanan" Command="{Binding MulaiUbahCommand}"
+                              IsVisible="{Binding BisaUbahPesanan}" />
+                      <Button Classes="danger" Content="Batalkan pesanan"
+                              DataContext="{Binding PesananSaya}"
+                              Command="{Binding BatalkanCommand}" IsVisible="{Binding BisaDibatalkan}" />
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+
+                <TextBlock Classes="k" TextWrapping="Wrap" IsVisible="{Binding TampilkanInfoBukanPemesan}"
+                           Text="Pemesanan hanya bisa dilakukan dengan akun pemesan." />
+
+                <!-- Kelola event (penyedia pemilik / admin) -->
+                <StackPanel Spacing="12" IsVisible="{Binding BisaKelola}">
+                  <Border Height="1" Background="{DynamicResource Divider}" />
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Kelola event" Classes="section" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                      <Button Classes="ghost" Content="Edit event"
+                              Command="{Binding $parent[UserControl].DataContext.EditEventCommand}" />
+                      <Button Classes="danger" Content="Hapus event"
+                              Command="{Binding $parent[UserControl].DataContext.MintaHapusCommand}" />
+                    </StackPanel>
+                  </Grid>
+
+                  <Border Background="{DynamicResource DangerBg}" BorderBrush="{DynamicResource DangerBorder}" BorderThickness="1" CornerRadius="10"
+                          Padding="16" IsVisible="{Binding $parent[UserControl].DataContext.KonfirmasiHapus}">
+                    <StackPanel Spacing="10">
+                      <TextBlock Text="Hapus event ini?" FontWeight="SemiBold" Foreground="{DynamicResource DangerText}" />
+                      <TextBlock Text="{Binding $parent[UserControl].DataContext.HapusInfo}" Classes="v" />
+                      <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Classes="danger" Content="Ya, hapus"
+                                Command="{Binding $parent[UserControl].DataContext.HapusEventCommand}" />
+                        <Button Classes="ghost" Content="Batal"
+                                Command="{Binding $parent[UserControl].DataContext.BatalHapusCommand}" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Pesanan masuk" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" />
+                    <TextBlock Text="{Binding PesananMasukRingkas}" Classes="k" />
+                  </StackPanel>
+                  <TextBlock Classes="k" FontSize="12" TextWrapping="Wrap"
+                             Text="Perbarui status, catat pembayaran, atau batalkan pesanan lewat menu Pesanan." />
+                  <ItemsControl ItemsSource="{Binding PesananMasuk}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border BorderBrush="{DynamicResource Divider}" BorderThickness="0,0,0,1" Padding="0,10">
+                          <Grid ColumnDefinitions="*,12,Auto">
+                            <StackPanel Spacing="2">
+                              <TextBlock Text="{Binding PemesanText}" Classes="v" FontWeight="SemiBold" />
+                              <TextBlock Classes="k" FontSize="12">
+                                <Run Text="{Binding Kode}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding TanggalPendek}" />
+                              </TextBlock>
+                              <TextBlock Text="{Binding RincianText}" Classes="v" FontSize="13" />
+                              <TextBlock Text="{Binding TotalText}" Classes="v" FontSize="13" FontWeight="SemiBold" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Right">
+                              <Border Background="{Binding StatusBrush}" CornerRadius="10" Padding="8,2"
+                                      HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding StatusText}" Classes="badge" />
+                              </Border>
+                              <Border IsVisible="{Binding TampilBayar}" Background="{Binding BayarBrush}" CornerRadius="10" Padding="8,2"
+                                      HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding BayarText}" Classes="badge" />
+                              </Border>
+                            </StackPanel>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+
+                <TextBlock Text="{Binding Kontak, StringFormat='Kontak penyedia: {0}'}" Classes="k" />
+
+              </StackPanel>
+            </ScrollViewer>
+          </Panel>
+
+          <!-- Form buat event -->
+          <ScrollViewer IsVisible="{Binding IsFormOpen}">
+            <StackPanel Margin="28" Spacing="14" MaxWidth="640" HorizontalAlignment="Left">
+              <TextBlock Text="{Binding FormJudul}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+
+              <StackPanel Spacing="4">
+                <TextBlock Text="Judul event" Classes="k" />
+                <TextBox Text="{Binding NewJudul}" Watermark="Contoh: Jastip Bakpia Pathok Jogja" />
+              </StackPanel>
+
+              <Grid ColumnDefinitions="*,12,*">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Kategori" Classes="k" />
+                  <ComboBox ItemsSource="{Binding KategoriForm}" SelectedItem="{Binding NewKategori}"
+                            HorizontalAlignment="Stretch" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Kontak (WhatsApp)" Classes="k" />
+                  <TextBox Text="{Binding NewKontak}" />
+                </StackPanel>
+              </Grid>
+
+              <StackPanel Spacing="4">
+                <TextBlock Text="Lokasi belanja" Classes="k" />
+                <TextBox Text="{Binding NewLokasi}" Watermark="Contoh: Malioboro, Yogyakarta" />
+              </StackPanel>
+
+              <StackPanel Spacing="4">
+                <TextBlock Text="Deskripsi dan syarat" Classes="k" />
+                <TextBox Text="{Binding NewDeskripsi}" AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="72" />
+              </StackPanel>
+
+              <Grid ColumnDefinitions="*,12,*">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Tutup pesanan (tanggal)" Classes="k" />
+                  <DatePicker SelectedDate="{Binding NewDeadlineDate}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Tutup pesanan (jam)" Classes="k" />
+                  <TimePicker SelectedTime="{Binding NewDeadlineTime}" ClockIdentifier="24HourClock" />
+                </StackPanel>
+              </Grid>
+
+              <Grid ColumnDefinitions="*,12,*">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Estimasi sampai (tanggal)" Classes="k" />
+                  <DatePicker SelectedDate="{Binding NewEstimasiDate}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Estimasi sampai (jam)" Classes="k" />
+                  <TimePicker SelectedTime="{Binding NewEstimasiTime}" ClockIdentifier="24HourClock" />
+                </StackPanel>
+              </Grid>
+
+              <Grid ColumnDefinitions="*,12,*,12,*">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Ongkos kirim (Rp)" Classes="k" />
+                  <NumericUpDown Value="{Binding NewOngkir}" Minimum="0" Increment="1000"
+                                 FormatString="N0" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Biaya jasa (Rp)" Classes="k" />
+                  <NumericUpDown Value="{Binding NewJasa}" Minimum="0" Increment="1000"
+                                 FormatString="N0" />
+                </StackPanel>
+                <StackPanel Grid.Column="4" Spacing="4">
+                  <TextBlock Text="Kuota (slot)" Classes="k" />
+                  <NumericUpDown Value="{Binding NewKuota}" Minimum="1" Increment="1"
+                                 FormatString="N0" />
+                </StackPanel>
+              </Grid>
+
+              <StackPanel Spacing="4">
+                <TextBlock Text="Daftar barang, satu baris per barang: Nama | Harga | Catatan (opsional)"
+                           Classes="k" TextWrapping="Wrap" />
+                <TextBox Text="{Binding NewItemsText}" AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="110"
+                         Watermark="Bakpia Keju 25 isi | 38000 | Tahan 3 hari&#x0A;Gudeg Kering | 55000" />
+              </StackPanel>
+
+              <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerText}" TextWrapping="Wrap" />
+
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Classes="primary" Content="Simpan event" Command="{Binding SimpanEventCommand}"
+                        IsEnabled="{Binding !SedangMenyimpan}" />
+                <Button Classes="ghost" Content="Batal" Command="{Binding BatalFormCommand}" />
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>
