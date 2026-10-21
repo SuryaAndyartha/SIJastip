@@ -83,17 +83,6 @@ Tabel: `Pengguna`, `Events`, `JastipItem`, `Pesanan`, `PesananDetail`, `Pembayar
 - Views/        MainWindow (shell), DashboardView, EventView, PesananView, PelangganView, PengaturanView, LoginWindow
 - App.axaml     Design tokens (warna terang & gelap), style bersama, dan pemetaan ViewModel → View
 
-## Pengujian
-Folder `SIJastip.Uji` (di luar folder proyek) berisi 45 skenario uji otomatis untuk service:
-login, hak akses, kuota, status, pembayaran, backup/restore, dan lain-lain.
-
-```bash
-cd SIJastip.Uji
-dotnet run
-```
-Uji memakai folder data sementara sendiri (lewat environment variable `SIJASTIP_DATA_DIR`),
-jadi database aplikasi di laptopmu tidak tersentuh.
-
 ## Catatan teknis
 - `AvaloniaUseCompiledBindingsByDefault` masih `false` (binding lewat reflection). Bisa diaktifkan nanti
   dengan menambahkan `x:DataType` di setiap View.
